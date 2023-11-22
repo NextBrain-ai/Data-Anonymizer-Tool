@@ -136,7 +136,7 @@ footer_html = f'''
     </div>
     <div class="img-container">
         {github_svg}<br/>
-        <a href="https://github.com/nextbrain/Anonymizer" target="_blank">GitHub Project</a>
+        <a href="https://github.com/NextBrain-ai/NB-Anonymizer" target="_blank">GitHub Project</a>
     </div>
 </div>
 '''
