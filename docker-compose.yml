@@ -1,0 +1,12 @@
+version: "3.5"
+
+services:
+  nb_anonymization:
+    container_name: nb_anonymization
+    image: nextbrain/nb_anonymization:v0.0.1
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    expose:
+      - 8501
