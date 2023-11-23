@@ -50,7 +50,11 @@ st.set_page_config(
 
 
 @st.cache_data
-def anonymize(uploaded_file, num_rows: int = 100) -> pd.DataFrame:
+def anonymize(
+    uploaded_file,
+    num_rows: int = 100,
+    algorithm_level: int = 1
+) -> pd.DataFrame:
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_dir = pathlib.Path(temp_dir)
 
@@ -61,15 +65,30 @@ def anonymize(uploaded_file, num_rows: int = 100) -> pd.DataFrame:
         csv_file.write_bytes(uploaded_file.getvalue())
 
         describer = DataDescriber(category_threshold=20)
-        describer.describe_dataset_in_independent_attribute_mode(csv_file)
+        level_to_describer_algorithm = {
+            0: describer.describe_dataset_in_random_mode,
+            1: describer.describe_dataset_in_independent_attribute_mode,
+            2: describer.describe_dataset_in_correlated_attribute_mode,
+        }
+
+        # Generate description
+        level_to_describer_algorithm[algorithm_level](csv_file)
+        # Save
         describer.save_dataset_description_to_file(description_file)
 
         generator = DataGenerator()
-        generator.generate_dataset_in_independent_mode(
+        level_to_generator_algorithm = {
+            0: generator.generate_dataset_in_random_mode,
+            1: generator.generate_dataset_in_independent_mode,
+            2: generator.generate_dataset_in_correlated_attribute_mode,
+        }
+
+        # Generate synthetic data
+        level_to_generator_algorithm[algorithm_level](
             num_rows,
             description_file=description_file
         )
-
+        # Save
         generator.save_synthetic_data(synthetic_data_file)
 
         return pd.read_csv(synthetic_data_file)
@@ -161,8 +180,8 @@ description_placeholder.write(
     'See how to use it in your own servers or local pc: [Instructions](https://github.com/NextBrain-ai/NB-Anonymizer/blob/main/README.md)'
 )
 
-placeholder = st.empty()
-csv_file = placeholder.file_uploader(
+upload_placeholder = st.empty()
+csv_file = upload_placeholder.file_uploader(
     'Select file',
     type=['csv', 'xlsx'],
     accept_multiple_files=False,
@@ -170,16 +189,31 @@ csv_file = placeholder.file_uploader(
 
 if csv_file is not None:
     description_placeholder.empty()
-    placeholder.empty()
+    upload_placeholder.empty()
     try:
         df = pd.read_csv(csv_file)
 
         csv_placeholder = st.empty()
         csv_placeholder.write(df)
 
+        options = [
+            'Random mode (fast speed)',
+            'Independent attribute mode (medium speed)',
+            'Correlated attribute mode (low speed)'
+        ]
+        option = st.selectbox(
+            'Select your Anonymization algorithm (Optional)', options,
+            index=1,
+        )
+
         if st.button('Anonymize'):
             csv_placeholder.empty()
-            df = anonymize(csv_file, num_rows=len(df))
+            algorithm_level = options.index(option)
+            df = anonymize(
+                csv_file,
+                num_rows=len(df),
+                algorithm_level=algorithm_level
+            )
 
             st.write('Anonymized data:')
             st.write(df)
