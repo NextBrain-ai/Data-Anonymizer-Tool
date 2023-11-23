@@ -133,7 +133,7 @@ Contributions to NB-Anonymizer are welcome and appreciated. If you want to contr
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a pull request.
 
-For more detailed information, please refer to the [CONTRIBUTING](CONTRIBUTING) file.
+For more detailed information, please refer to the [CONTRIBUTING](CONTRIBUTING.md) file.
 
 ## License
 
