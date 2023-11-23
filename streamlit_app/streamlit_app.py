@@ -7,7 +7,7 @@ from DataSynthesizer.DataDescriber import DataDescriber
 from DataSynthesizer.DataGenerator import DataGenerator
 
 
-TITLE = 'NextBrain Anonymizer'
+TITLE = 'Data Anonymization Tool'
 
 folder = pathlib.Path(__file__).parent
 
@@ -173,7 +173,7 @@ st.title(TITLE)
 
 description_placeholder = st.empty()
 description_placeholder.write(
-    'NextBrain\'s data Anonymizer tool ensures top-tier privacy by irreversibly '
+    'Data Anonymizer tool ensures top-tier privacy by irreversibly '
     'obscuring personal identifiers without storing any data. Ideal for businesses '
     'prioritizing data security and compliance, it offers a reliable solution for '
     'safeguarding sensitive information.\n\n'

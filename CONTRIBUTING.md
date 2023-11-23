@@ -1,6 +1,6 @@
-# Contributing to NB-Anonymizer
+# Contributing to Data Anonymization Tool
 
-We welcome contributions to the NB-Anonymizer project and are grateful for every kind of contribution, including bug reports, feature requests, and code contributions.
+We welcome contributions to the Data Anonymization Tool project and are grateful for every kind of contribution, including bug reports, feature requests, and code contributions.
 
 ## How to Contribute
 

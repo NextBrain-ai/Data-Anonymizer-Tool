@@ -1,5 +1,5 @@
 {
-  "name": "nextbrain-anonymization",
+  "name": "data-anonymization-tool",
   "version": "0.1.0",
   "main": "./build/electron/main.js",
   "author": "NextBrain AI <info@nextbrain.ai>",

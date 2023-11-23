@@ -2,7 +2,7 @@
 
 ## Introduction
 
-NextBrain's data Anonymizer tool ensures top-tier privacy by irreversibly obscuring personal identifiers without storing any data. Ideal for businesses prioritizing data security and compliance, it offers a reliable solution for safeguarding sensitive information.
+Data Anonymizer tool ensures top-tier privacy by irreversibly obscuring personal identifiers without storing any data. Ideal for businesses prioritizing data security and compliance, it offers a reliable solution for safeguarding sensitive information.
 
 This project is inspired by a need we recognized during the development of our machine learning solution, NextBrain. It empowers us to transcend the barriers typically encountered in the proof of concept phase. Furthermore, through this initiative, we are eager to support the open-source community, tackling some of the foremost challenges encountered in employing these types of tools.
 
