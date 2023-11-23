@@ -7,3 +7,4 @@ README.md
 LICENSE
 CONTRIBUTING.md
 package*.json
+*.ipynb

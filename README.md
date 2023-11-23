@@ -74,7 +74,9 @@ To get started with the development of NB-Anonymizer, follow these steps:
 
 ### Using Jupyter Notebook
 
-Coming soon
+**Download the [NB Anonymizer Jupyter Notebook](NB_Anonymizer.ipynb) now** and dive into a user-friendly, step-by-step guide designed for effortless navigation and comprehension.
+
+Prefer not to install anything? No problem! You can also utilize **Google Colab** to run the notebook seamlessly. Simply click [here](https://colab.research.google.com/drive/1nYl800vK7yzudFJFqe5HDJFEMzKumpnq?usp=sharing) to execute the code in a cloud-based environment, hassle-free.
 
 ### Using Docker
 
