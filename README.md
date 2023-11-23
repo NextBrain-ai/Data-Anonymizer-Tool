@@ -1,4 +1,4 @@
-# NB Anonymizer
+# Data Anonymization Tool
 
 ## Introduction
 
@@ -6,9 +6,13 @@ NextBrain's data Anonymizer tool ensures top-tier privacy by irreversibly obscur
 
 This project is inspired by a need we recognized during the development of our machine learning solution, NextBrain. It empowers us to transcend the barriers typically encountered in the proof of concept phase. Furthermore, through this initiative, we are eager to support the open-source community, tackling some of the foremost challenges encountered in employing these types of tools.
 
+---
+
+The anonymization process maintains the original data distribution while injecting noise into the statistics. This approach helps to prevent the re-identification of the data. For more details about the anonymization process, refer to the following paper: [DataSynthesizer](https://github.com/DataResponsibly/DataSynthesizer/blob/master/docs/cr-datasynthesizer-privacy.pdf)
+
 ## Table of Contents
 
-- [NB Anonymizer](#nb-anonymizer)
+- [Data Anonymization Tool](#data-anonymization-tool)
   - [Introduction](#introduction)
   - [Table of Contents](#table-of-contents)
   - [Installation](#installation)
@@ -20,6 +24,13 @@ This project is inspired by a need we recognized during the development of our m
     - [Using Jupyter Notebook](#using-jupyter-notebook)
     - [Using Docker](#using-docker)
   - [Building the Project](#building-the-project)
+  - [Roadmap](#roadmap)
+    - [Phase 1: Initial Setup](#phase-1-initial-setup)
+    - [Phase 2: Web Platform Development](#phase-2-web-platform-development)
+    - [Phase 3: Integration with Popular Tools](#phase-3-integration-with-popular-tools)
+    - [Phase 4: Desktop Application](#phase-4-desktop-application)
+    - [Phase 5: Advanced Algorithm Testing](#phase-5-advanced-algorithm-testing)
+    - [Phase 6: Evaluation and Analysis](#phase-6-evaluation-and-analysis)
   - [Contributing](#contributing)
   - [License](#license)
   - [Contact](#contact)
@@ -96,16 +107,6 @@ This command will pull the necessary Docker images, create a container, and star
 
 ## Building the Project
 
-To build a distribution of the project, use the following commands:
-
-```bash
-npm run dump streamlit_app -- -r requirements.txt
-```
-
-```bash
-npm run dist
-```
-
 Before building a distribution of NB-Anonymizer, ensure that you meet the following prerequisites:
 
 - **Python 3.10 or Higher**: The project requires Python version 3.10 or newer. You can download and install the latest version of Python from [python.org](https://www.python.org/downloads/).
@@ -124,6 +125,28 @@ Once you have these prerequisites installed, follow these steps to build the pro
    npm run dist
    ```
    These commands will package the application and prepare it for distribution. After running these commands, the built version of NB-Anonymizer will be available in the distribution directory of the project.
+
+## Roadmap
+
+### Phase 1: Initial Setup
+- [x] **Initial Anonymization System**: Develop a basic system for data anonymization to lay the groundwork for more advanced features.
+
+### Phase 2: Web Platform Development
+- [x] **Web Platform for Anonymization**: Create a user-friendly web interface that allows users to easily anonymize their data.
+
+### Phase 3: Integration with Popular Tools
+- [x] **Jupyter Notebook and Google Colab Integration**: Ensure our system is compatible with Jupyter Notebook and Google Colab for wider accessibility.
+- [x] **Docker and Docker Compose Deployment**: Implement Docker and Docker Compose to facilitate easy deployment and scaling of our application.
+
+### Phase 4: Desktop Application
+- [ ] **Desktop Application**: Develop a standalone desktop application for users who prefer a dedicated software solution.
+
+### Phase 5: Advanced Algorithm Testing
+- [ ] **Testing More Powerful Algorithms**: Experiment with more advanced algorithms to improve the efficiency and effectiveness of the anonymization process.
+
+### Phase 6: Evaluation and Analysis
+- [ ] **Evaluation of Original vs Anonymized Data**: Conduct thorough evaluations to ensure the integrity of the data post-anonymization.
+- [ ] **Statistical Graph Generation**: Implement features for generating statistical graphs to visualize the effectiveness of our anonymization processes.
 
 ## Contributing
 
