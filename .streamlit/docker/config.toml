@@ -1,3 +1,5 @@
+[server]
+port = 80
 [theme]
 primaryColor="#F63366"
 backgroundColor="#011222"
