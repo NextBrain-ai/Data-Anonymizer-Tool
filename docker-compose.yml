@@ -9,6 +9,4 @@ services:
       dockerfile: Dockerfile
     restart: unless-stopped
     ports:
-      - 8501:80
-    volumes:
-      - ./.streamlit/docker:/app/.streamlit
+      - 8501:8501
