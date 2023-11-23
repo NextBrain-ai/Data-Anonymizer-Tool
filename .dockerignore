@@ -4,4 +4,6 @@ dist
 node_modules
 .gitignore
 README.md
+LICENSE
+CONTRIBUTING
 package*.json
