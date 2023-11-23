@@ -8,14 +8,14 @@ We welcome contributions to the NB-Anonymizer project and are grateful for every
 
 Bugs are tracked as GitHub issues. If you find a bug in the project, please:
 
-1. Check if the bug is already reported in the [Issues](https://github.com/NextBrain-ai/NB-Anonymizer/issues) section.
+1. Check if the bug is already reported in the [Issues](https://github.com/NextBrain-ai/Data-Anonymizer-Tool/issues) section.
 2. If the bug has not been reported, create a new issue with a detailed description, including as much relevant information as possible.
 
 ### Feature Requests
 
 We are always open to new ideas and improvements. If you have a suggestion:
 
-1. First, check if the feature has already been suggested in the [Issues](https://github.com/NextBrain-ai/NB-Anonymizer/issues) section.
+1. First, check if the feature has already been suggested in the [Issues](https://github.com/NextBrain-ai/Data-Anonymizer-Tool/issues) section.
 2. If not, submit a new issue, clearly explaining the feature idea and its benefits.
 
 ### Submitting Changes

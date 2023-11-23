@@ -57,7 +57,7 @@ To get started with the development of NB-Anonymizer, follow these steps:
 
 1. **Clone the Repository**: First, clone the repository to your local machine using Git:
    ```bash
-   git clone https://github.com/NextBrain-ai/NB-Anonymizer
+   git clone https://github.com/NextBrain-ai/Data-Anonymizer-Tool
    ```
 2. **Create a Virtual Environment**: Navigate to the project directory and create a Python virtual environment:
    ```bash

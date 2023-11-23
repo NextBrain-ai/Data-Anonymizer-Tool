@@ -157,7 +157,7 @@ footer_html = f'''
     </div>
     <div class="img-container">
         {github_svg}<br/>
-        <a href="https://github.com/NextBrain-ai/NB-Anonymizer" target="_blank">GitHub Project</a>
+        <a href="https://github.com/NextBrain-ai/Data-Anonymizer-Tool" target="_blank">GitHub Project</a>
     </div>
 </div>
 '''
@@ -177,7 +177,7 @@ description_placeholder.write(
     'obscuring personal identifiers without storing any data. Ideal for businesses '
     'prioritizing data security and compliance, it offers a reliable solution for '
     'safeguarding sensitive information.\n\n'
-    'See how to use it in your own servers or local pc: [Instructions](https://github.com/NextBrain-ai/NB-Anonymizer/blob/main/README.md)'
+    'See how to use it in your own servers or local pc: [Instructions](https://github.com/NextBrain-ai/Data-Anonymizer-Tool/blob/main/README.md)'
 )
 
 upload_placeholder = st.empty()
