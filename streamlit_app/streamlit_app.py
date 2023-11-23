@@ -48,6 +48,7 @@ st.set_page_config(
     initial_sidebar_state='collapsed',
 )
 
+
 @st.cache_data
 def anonymize(uploaded_file, num_rows: int = 100) -> pd.DataFrame:
     with tempfile.TemporaryDirectory() as temp_dir:
@@ -71,12 +72,13 @@ def anonymize(uploaded_file, num_rows: int = 100) -> pd.DataFrame:
 
         generator.save_synthetic_data(synthetic_data_file)
 
-        st.write('Synthetic data!!!!!!!!')
         return pd.read_csv(synthetic_data_file)
+
 
 @st.cache_data
 def convert_df(df: pd.DataFrame) -> str:
-   return df.to_csv(index=False).encode('utf-8')
+    return df.to_csv(index=False).encode('utf-8')
+
 
 custom_styles = """
     <style>
@@ -131,7 +133,7 @@ footer_html = f'''
         <a href="https://nextbrain.ai" target="_blank">NextBrain</a>
     </div>
     <div>
-        {windows_svg}{linux_svg}{apple_svg}<br/>
+        {windows_svg}{apple_svg}{linux_svg}<br/>
         Windows, Mac and Linux version coming soon
     </div>
     <div class="img-container">
@@ -149,22 +151,37 @@ except Exception:
     st.write(' ')
 
 st.title(TITLE)
-st.write(
+
+description_placeholder = st.empty()
+description_placeholder.write(
     'NextBrain\'s data Anonymizer tool ensures top-tier privacy by irreversibly '
     'obscuring personal identifiers without storing any data. Ideal for businesses '
     'prioritizing data security and compliance, it offers a reliable solution for '
-    'safeguarding sensitive information.'
+    'safeguarding sensitive information.\n\n'
+    'See how to use it in your own servers or local pc: [Instructions](https://github.com/NextBrain-ai/NB-Anonymizer/blob/main/README.md)'
 )
-csv_file = st.file_uploader('Select file', type=['csv', 'xlsx'], accept_multiple_files=False)
+
+placeholder = st.empty()
+csv_file = placeholder.file_uploader(
+    'Select file',
+    type=['csv', 'xlsx'],
+    accept_multiple_files=False,
+)
 
 if csv_file is not None:
+    description_placeholder.empty()
+    placeholder.empty()
     try:
         df = pd.read_csv(csv_file)
-        st.write(df)
+
+        csv_placeholder = st.empty()
+        csv_placeholder.write(df)
 
         if st.button('Anonymize'):
+            csv_placeholder.empty()
             df = anonymize(csv_file, num_rows=len(df))
-            st.success('Done!')
+
+            st.write('Anonymized data:')
             st.write(df)
             st.download_button(
                 'Press to Download',
