@@ -3,7 +3,7 @@ version: "3.5"
 services:
   nb_anonymizer:
     container_name: nb_anonymizer
-    image: nextbrain/nb_anonymizer:v0.0.1
+    image: nextbrain/nb_anonymizer:v0.0.2
     build:
       context: ./
       dockerfile: Dockerfile
