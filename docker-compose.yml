@@ -3,7 +3,7 @@ version: "3.5"
 services:
   data_anonymization_tool:
     container_name: data_anonymization_tool
-    image: nextbrain/data_anonymization_tool:v0.0.2
+    image: nextbrain/data_anonymization_tool:v0.0.3
     build:
       context: ./
       dockerfile: Dockerfile

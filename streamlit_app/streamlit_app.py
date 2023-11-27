@@ -3,9 +3,21 @@ import pandas as pd
 import streamlit as st
 import tempfile
 
+
 from DataSynthesizer.DataDescriber import DataDescriber
 from DataSynthesizer.DataGenerator import DataGenerator
+from DataSynthesizer.lib.utils import (
+    read_json_file,
+    pairwise_attributes_mutual_information
+    )
 
+import sklearn.linear_model as sklmodel
+import plotly.subplots as sp
+import plotly.graph_objs as go
+import numpy as np
+
+from typing import Tuple
+from express_model_inspector import ExpressModelInspector
 
 TITLE = 'Data Anonymization Tool'
 
@@ -48,13 +60,28 @@ st.set_page_config(
     initial_sidebar_state='collapsed',
 )
 
+@st.cache_data
+def calc_accuracy(df: pd.DataFrame, synthetic_df: pd.DataFrame) -> float:
+    df = df.copy()
+    new_df = synthetic_df.copy()
+    df['Synthetic'] = 0
+    new_df['Synthetic'] = 1
+    data = pd.concat([df, new_df.sample(len(df))]).dropna()
+    numerical_columns = data.select_dtypes(include=['number'])
+    data = data[numerical_columns.columns]
+    X = data.drop(columns=['Synthetic'])
+    y = data['Synthetic']
+    clf = sklmodel.LogisticRegression(random_state=0).fit(X, y)
+    pMSE = np.sum(np.square(clf.predict_proba(X)[0:,0] - 0.5))/len(data)
+    return 100*(1 - pMSE)
+
 
 @st.cache_data
 def anonymize(
     uploaded_file,
     num_rows: int = 100,
     algorithm_level: int = 1
-) -> pd.DataFrame:
+) -> Tuple[pd.DataFrame, dict]:
     with tempfile.TemporaryDirectory() as temp_dir:
         temp_dir = pathlib.Path(temp_dir)
 
@@ -91,20 +118,45 @@ def anonymize(
         # Save
         generator.save_synthetic_data(synthetic_data_file)
 
-        return pd.read_csv(synthetic_data_file)
+        return pd.read_csv(synthetic_data_file), read_json_file(description_file)
 
 
 @st.cache_data
 def convert_df(df: pd.DataFrame) -> str:
     return df.to_csv(index=False).encode('utf-8')
 
+def calculate_heatmaps(df: pd.DataFrame, synthetic_df: pd.DataFrame):
+        df_mi = pairwise_attributes_mutual_information(df)
+        synthetic_mi = pairwise_attributes_mutual_information(synthetic_df)
+        fig = sp.make_subplots(rows=2, cols=2, subplot_titles=['Private data correlation', 'Synthetic data correlation', 'Difference'])
+        heatmap1 = go.Heatmap(z=df_mi.values, x=df_mi.columns, y=df_mi.index)
+        fig.add_trace(heatmap1, row=1, col=1)
+        heatmap2 = go.Heatmap(z=synthetic_mi.values, x=synthetic_mi.columns, y=synthetic_mi.index)
+        fig.add_trace(heatmap2, row=1, col=2)
+        fig.update_layout(height=800, showlegend=False)
+        heatmap3 = go.Heatmap(z=(df_mi-synthetic_mi).values, x=synthetic_mi.columns, y=synthetic_mi.index)
+        fig.add_trace(heatmap3, row=2, col=1)
+        fig.update_layout(height=1400, showlegend=False)
+        return fig
+
+
 
 custom_styles = """
     <style>
-    footer {visibility: hidden;}
+    .main .block-container {
+        display:flex;
+        min-height:calc(100vh - 1rem);
+        padding-bottom: 0;
+        padding-top: 2rem;
+    }
+    .main  > *:nth-child(n+2){
+        display:none
+    }
+    .main .block-container > div > div > div:nth-last-child(2)  > div {
+        justify-content:flex-end;
+    }
     .footer {
-        position: fixed;
-        bottom: 0;
+        align-self:end;
         width: 100%;
         text-align: center;
         display: flex;
@@ -139,8 +191,50 @@ custom_styles = """
     .img-container svg, .img-container a {
         margin-right: 10px;
     }
+    #data-anonymization-tool{
+        padding-top: 0;
+    }
+    .highlight {
+        color:white;
+        font-weight:bold;
+        text-decoration:underline;
+    }
+    .result-description{
+        display: inline-block;
+        font-size: 1.2rem;
+        padding: 15px;
+        border: 1px solid #192b3c;
+        border-radius:8px;
+        margin-bottom: 3.5rem;
+    }
+    .split-cols{
+        display:flex;
+        justify-content:space-between;
+        margin-bottom:5px;
+        flex-direction: row;
+    }
+    .split-cols > *:first-child{
+        margin-right:50px;
+    }
     </style>
 """
+
+result_description = '''
+<div class="result-description">
+    <div class="split-cols">
+       <span>Rows in the original dataset</span> <span class="highlight">{0}</span>
+    </div>
+    <div class="split-cols">
+       <span>Rows in the new dataset</span> <span class="highlight">{1}</span>
+    </div>
+    <div class="split-cols">
+      <span>Columns</span> <span class="highlight">{2}</span>
+    </div>
+    <div class="split-cols">
+      <span>Accuracy</span> <span class="highlight">{3}</span>
+    </div>
+</div>
+'''
 
 footer_html = f'''
 <div class="footer">
@@ -190,40 +284,73 @@ csv_file = upload_placeholder.file_uploader(
 if csv_file is not None:
     description_placeholder.empty()
     upload_placeholder.empty()
+    
     try:
         df = pd.read_csv(csv_file)
-
         csv_placeholder = st.empty()
         csv_placeholder.write(df)
-
         options = [
             'Random mode (fast speed)',
             'Independent attribute mode (medium speed)',
             'Correlated attribute mode (low speed)'
         ]
-        option = st.selectbox(
+        option_placeholder = st.empty()
+        option = option_placeholder.selectbox(
             'Select your Anonymization algorithm (Optional)', options,
             index=1,
         )
 
-        if st.button('Anonymize'):
+        button_generate_synthetic_placeholder = st.empty()
+        if button_generate_synthetic_placeholder.button('Anonymize'):
+            button_generate_synthetic_placeholder.empty()
             csv_placeholder.empty()
+            csv_placeholder.empty()
+            option_placeholder.empty()
+
             algorithm_level = options.index(option)
-            df = anonymize(
+            synthetic_df, description = anonymize(
                 csv_file,
                 num_rows=len(df),
                 algorithm_level=algorithm_level
             )
 
+            st.markdown(
+                result_description.format(
+                    len(df),
+                    len(synthetic_df),
+                    len(synthetic_df.columns),
+                    f'{round(calc_accuracy(df, synthetic_df),2)}%'
+                ), unsafe_allow_html=True
+            )
             st.write('Anonymized data:')
-            st.write(df)
+            st.write(synthetic_df)
             st.download_button(
                 'Press to Download',
-                convert_df(df),
+                convert_df(synthetic_df),
                 'file.csv',
                 'text/csv',
-                key='download-csv'
+                key='download-csv',
+                type="primary"
             )
+            
+            with st.expander('Statistics', expanded=False):
+                tab1, tab2 = st.tabs(["Histograms", "Heatmaps"])
+                
+                with tab1:
+                    inspector = ExpressModelInspector(df, synthetic_df, description['attribute_description'])
+                    for attribute in synthetic_df.columns:
+                        try:
+                            fig = inspector.compare_histograms(attribute)
+                            if fig is None:
+                                continue
+                            st.plotly_chart(fig)
+                        except Exception:
+                            pass
+
+                with tab2:
+                    heatmaps = calculate_heatmaps(df, synthetic_df)
+                    st.plotly_chart(heatmaps, use_container_width=True)
+
     except Exception as e:
         st.error(f'An error occurred: {e}')
         st.exception(e)
