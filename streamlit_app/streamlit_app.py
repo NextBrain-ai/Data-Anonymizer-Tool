@@ -9,7 +9,7 @@ from DataSynthesizer.DataGenerator import DataGenerator
 from DataSynthesizer.lib.utils import (
     read_json_file,
     pairwise_attributes_mutual_information
-    )
+)
 
 import sklearn.linear_model as sklmodel
 import plotly.subplots as sp
@@ -60,6 +60,7 @@ st.set_page_config(
     initial_sidebar_state='collapsed',
 )
 
+
 @st.cache_data
 def calc_accuracy(df: pd.DataFrame, synthetic_df: pd.DataFrame) -> float:
     df = df.copy()
@@ -72,7 +73,7 @@ def calc_accuracy(df: pd.DataFrame, synthetic_df: pd.DataFrame) -> float:
     X = data.drop(columns=['Synthetic'])
     y = data['Synthetic']
     clf = sklmodel.LogisticRegression(random_state=0).fit(X, y)
-    pMSE = np.sum(np.square(clf.predict_proba(X)[0:,0] - 0.5))/len(data)
+    pMSE = np.sum(np.square(clf.predict_proba(X)[0:, 0] - 0.5))/len(data)
     return 100*(1 - pMSE)
 
 
@@ -125,20 +126,23 @@ def anonymize(
 def convert_df(df: pd.DataFrame) -> str:
     return df.to_csv(index=False).encode('utf-8')
 
-def calculate_heatmaps(df: pd.DataFrame, synthetic_df: pd.DataFrame):
-        df_mi = pairwise_attributes_mutual_information(df)
-        synthetic_mi = pairwise_attributes_mutual_information(synthetic_df)
-        fig = sp.make_subplots(rows=2, cols=2, subplot_titles=['Private data correlation', 'Synthetic data correlation', 'Difference'])
-        heatmap1 = go.Heatmap(z=df_mi.values, x=df_mi.columns, y=df_mi.index)
-        fig.add_trace(heatmap1, row=1, col=1)
-        heatmap2 = go.Heatmap(z=synthetic_mi.values, x=synthetic_mi.columns, y=synthetic_mi.index)
-        fig.add_trace(heatmap2, row=1, col=2)
-        fig.update_layout(height=800, showlegend=False)
-        heatmap3 = go.Heatmap(z=(df_mi-synthetic_mi).values, x=synthetic_mi.columns, y=synthetic_mi.index)
-        fig.add_trace(heatmap3, row=2, col=1)
-        fig.update_layout(height=1400, showlegend=False)
-        return fig
 
+def calculate_heatmaps(df: pd.DataFrame, synthetic_df: pd.DataFrame):
+    df_mi = pairwise_attributes_mutual_information(df)
+    synthetic_mi = pairwise_attributes_mutual_information(synthetic_df)
+    fig = sp.make_subplots(rows=2, cols=2, subplot_titles=[
+                           'Private data correlation', 'Synthetic data correlation', 'Difference'])
+    heatmap1 = go.Heatmap(z=df_mi.values, x=df_mi.columns, y=df_mi.index)
+    fig.add_trace(heatmap1, row=1, col=1)
+    heatmap2 = go.Heatmap(z=synthetic_mi.values,
+                          x=synthetic_mi.columns, y=synthetic_mi.index)
+    fig.add_trace(heatmap2, row=1, col=2)
+    fig.update_layout(height=800, showlegend=False)
+    heatmap3 = go.Heatmap(z=(df_mi-synthetic_mi).values,
+                          x=synthetic_mi.columns, y=synthetic_mi.index)
+    fig.add_trace(heatmap3, row=2, col=1)
+    fig.update_layout(height=1400, showlegend=False)
+    return fig
 
 
 custom_styles = """
@@ -284,7 +288,7 @@ csv_file = upload_placeholder.file_uploader(
 if csv_file is not None:
     description_placeholder.empty()
     upload_placeholder.empty()
-    
+
     try:
         df = pd.read_csv(csv_file)
         csv_placeholder = st.empty()
@@ -332,12 +336,13 @@ if csv_file is not None:
                 key='download-csv',
                 type="primary"
             )
-            
+
             with st.expander('Statistics', expanded=False):
                 tab1, tab2 = st.tabs(["Histograms", "Heatmaps"])
-                
+
                 with tab1:
-                    inspector = ExpressModelInspector(df, synthetic_df, description['attribute_description'])
+                    inspector = ExpressModelInspector(
+                        df, synthetic_df, description['attribute_description'])
                     for attribute in synthetic_df.columns:
                         try:
                             fig = inspector.compare_histograms(attribute)
