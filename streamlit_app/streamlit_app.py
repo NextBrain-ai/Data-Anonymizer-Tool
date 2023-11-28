@@ -72,6 +72,8 @@ def calc_accuracy(df: pd.DataFrame, synthetic_df: pd.DataFrame) -> float:
     data = data[numerical_columns.columns]
     X = data.drop(columns=['Synthetic'])
     y = data['Synthetic']
+    if y.unique()[0] <= 1:
+        return 0
     clf = sklmodel.LogisticRegression(random_state=0).fit(X, y)
     pMSE = np.sum(np.square(clf.predict_proba(X)[0:, 0] - 0.5))/len(data)
     return 100*(1 - pMSE)
@@ -318,12 +320,17 @@ if csv_file is not None:
                 algorithm_level=algorithm_level
             )
 
+            try:
+                acc = round(calc_accuracy(df, synthetic_df), 2)
+            except Exception:
+                acc = 0
+
             st.markdown(
                 result_description.format(
                     len(df),
                     len(synthetic_df),
                     len(synthetic_df.columns),
-                    f'{round(calc_accuracy(df, synthetic_df),2)}%'
+                    f'{acc}%' if acc is not None else 'N/A'
                 ), unsafe_allow_html=True
             )
             st.write('Anonymized data:')
